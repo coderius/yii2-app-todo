@@ -4,7 +4,7 @@
     </a>
     <h1 align="center">Yii 2 Api App</h1>
     <br>
-    Repository contains rest api for frontend app landing page development wich Vue.js
+    Repository contains REST api for frontend app landing page development wich Vue.js
 
 </p>
 

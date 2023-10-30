@@ -75,11 +75,7 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        try{
-            throw new \Exception;
-        }catch(\Exception $e){ 
-            var_dump($e->getTraceAsString());
-        }
+        
         return $this->render('index');
     }
 

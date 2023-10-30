@@ -15,12 +15,10 @@ use common\components\rbac\Rbac;
  * @property string $username
  * @property string $avatar
  * @property string $group_user - enum('user', 'admin')
- * @property int $signup_type
- * @property int $auth_type
  * @property string $password
  * @property string $password_reset_token
  * @property string $email
- * @property string $authKey
+ * @property string $auth_key
  * @property integer $status
  * @property integer $created_at
  * @property integer $updated_at
@@ -28,11 +26,6 @@ use common\components\rbac\Rbac;
  */
 class User extends ActiveRecord implements IdentityInterface
 {
-    const SIGNUP_TYPE_SIGNUPFORM  = 1;
-    const SIGNUP_TYPE_SOCIALLOGIN = 2;
-
-    const AUTH_TYPE_LOGINFORM  = 1;
-    const AUTH_TYPE_SOCIALLOGIN = 2;
     
     const STATUS_BLOCKED = 0;
     const STATUS_ACTIVE = 1;
@@ -78,7 +71,6 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return [
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
-            [['signup_type', 'auth_type', 'status'], 'integer'],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_BLOCKED]],
         ];
     }
@@ -161,7 +153,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getAuthKey()
     {
-        return $this->authKey;
+        return $this->auth_key;
     }
 
     /**
@@ -198,7 +190,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function generateAuthKey()
     {
-        $this->authKey = Yii::$app->security->generateRandomString();
+        $this->auth_key = Yii::$app->security->generateRandomString();
     }
 
     /**

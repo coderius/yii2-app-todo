@@ -35,10 +35,7 @@ class DealsController extends BaseProtectedController
                     [
                         'actions' => [ 'index', 'view', 'create', 'update', 'delete'],
                         'allow'   => true,
-                        'roles'   => [ 
-                            'user',
-                            // '?'
-                        ],
+                        'roles'   => [ 'user' ],
                     ],
                 ],
             ],

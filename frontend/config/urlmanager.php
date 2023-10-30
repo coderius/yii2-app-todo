@@ -12,6 +12,7 @@ return [
                 'site/<action>' => 'site/<action>',
                 'sitemap.xml' => 'sitemap/index',
                 'rss.xml' => 'rss/index',
+                '<controller>/<action>' => '<controller>/<action>',
 
                 
             ],

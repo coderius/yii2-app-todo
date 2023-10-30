@@ -2,7 +2,7 @@
 
 namespace frontend\controllers;
 
-use backend\controllers\base\BaseProtectedController;
+use frontend\controllers\base\BaseProtectedController;
 use backend\helpers\slut\FiltersHelper;
 use common\helpers\FlashHelper;
 use common\helpers\UserBanHelper;
@@ -13,7 +13,8 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\Response;
 use yii\web\UploadedFile;
-use yii2mod\rbac\filters\AccessControl;
+// use yii2mod\rbac\filters\AccessControl;
+use yii\filters\AccessControl;
 use Exception;
 use common\models\UserLog;
 use common\models\slut\SlutGirl;

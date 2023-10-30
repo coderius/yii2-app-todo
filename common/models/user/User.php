@@ -27,9 +27,10 @@ use common\components\rbac\Rbac;
 class User extends ActiveRecord implements IdentityInterface
 {
     
-    const STATUS_BLOCKED = 0;
-    const STATUS_ACTIVE = 1;
-    const STATUS_WAIT = 2;
+    
+    const STATUS_DELETED = 0;
+    const STATUS_INACTIVE = 9;
+    const STATUS_ACTIVE = 10;
     
     const GROUP_USER = 'user';
     const GROUP_ADMIN = 'admin';
@@ -71,7 +72,7 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return [
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
-            ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_BLOCKED]],
+            ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE]],
         ];
     }
 
@@ -140,6 +141,19 @@ class User extends ActiveRecord implements IdentityInterface
         return $timestamp + $expire >= time();
     }
 
+     /**
+     * Finds user by verification email token
+     *
+     * @param string $token verify email token
+     * @return static|null
+     */
+    public static function findByVerificationToken($token) {
+        return static::findOne([
+            'verification_token' => $token,
+            'status' => self::STATUS_INACTIVE
+        ]);
+    }
+
     /**
      * @inheritdoc
      */
@@ -172,7 +186,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function validatePassword($password)
     {
-        return $this->password;
+        return Yii::$app->security->validatePassword($password, $this->password_hash);
     }
 
     /**
@@ -182,7 +196,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function setPassword($password)
     {
-        $this->password = Yii::$app->security->generatePasswordHash($password);
+        $this->password_hash = Yii::$app->security->generatePasswordHash($password);
     }
 
     /**

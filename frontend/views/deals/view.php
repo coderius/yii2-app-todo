@@ -1,35 +1,38 @@
 <?php
 
 use yii\helpers\Html;
-use yii\grid\GridView;
+use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $searchModel frontend\models\DealsSearch */
-/* @var $dataProvider yii\data\ActiveDataProvider */
+/* @var $model common\models\Deals */
 
-$this->title = Yii::t('messages', 'Deals');
+$this->title = $model->name;
+$this->params['breadcrumbs'][] = ['label' => Yii::t('messages', 'Deals'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
+\yii\web\YiiAsset::register($this);
 ?>
-<div class="deals-index">
+<div class="deals-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a(Yii::t('messages', 'Create Deals'), ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a(Yii::t('messages', 'Update'), ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a(Yii::t('messages', 'Delete'), ['delete', 'id' => $model->id], [
+            'class' => 'btn btn-danger',
+            'data' => [
+                'confirm' => Yii::t('messages', 'Are you sure you want to delete this item?'),
+                'method' => 'post',
+            ],
+        ]) ?>
     </p>
 
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
+    <?= DetailView::widget([
+        'model' => $model,
+        'attributes' => [
             'id',
             'name',
             [
-                'attribute' => 'category',
+                'attribute' => 'id_category',
                 'label' => Yii::t('messages', 'Category'),
                 'value'     => function ( $data ) {
                     return $data->category->name;
@@ -49,10 +52,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     return Yii::$app->formatter->asDatetime( $data->created_at, 'dd.MM.y HH:mm:ss' );
                 },
             ],
-
-            ['class' => 'yii\grid\ActionColumn'],
         ],
-    ]); ?>
-
+    ]) ?>
 
 </div>

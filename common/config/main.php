@@ -54,6 +54,16 @@ return [
                         'app/admin' => 'admin.php',
                     ],
                 ],
+                'messages*' => [
+                    'class' => 'yii\i18n\PhpMessageSource',
+                    'basePath' => '@common/translations',
+                    //'sourceLanguage' => 'en-US',
+                    'forceTranslation' => true,
+                    'fileMap' => [
+                        'messages' => 'messages.php',
+                    ],
+                ],
+
                 'auth*' => [
                     'class' => 'yii\i18n\PhpMessageSource',
                     'basePath' => '@common/translations',

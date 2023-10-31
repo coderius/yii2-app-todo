@@ -2,28 +2,21 @@
 
 namespace frontend\controllers;
 
-use frontend\controllers\base\BaseProtectedController;
-use backend\helpers\slut\FiltersHelper;
-use common\helpers\FlashHelper;
-use common\helpers\UserBanHelper;
-use common\models\User;
 use Yii;
-use backend\models\search\slut\SlutGirlSearch;
+use common\models\Deals;
+use frontend\models\DealsSearch;
+use frontend\controllers\base\BaseProtectedController;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use yii\web\Response;
-use yii\web\UploadedFile;
-// use yii2mod\rbac\filters\AccessControl;
 use yii\filters\AccessControl;
-use Exception;
-use common\models\UserLog;
-use common\models\slut\SlutGirl;
+use frontend\components\helpers\FiltersHelper;
 
 /**
- * GirlController implements the CRUD actions for SlutGirl model.
+ * DealsController implements the CRUD actions for Deals model.
  */
 class DealsController extends BaseProtectedController
 {
+    
     /**
      * {@inheritdoc}
      */
@@ -53,189 +46,100 @@ class DealsController extends BaseProtectedController
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function beforeAction( $action )
-    {
-        // if ( UserBanHelper::checkUser() ){
-        //     $this->redirect( [ '/site/banned-user' ] );
-        //     Yii::$app->end();
-        // }
-
-        return parent::beforeAction( $action );
-    }
-
-    /**
-     * Lists all SlutGirl models.
+     * Lists all Deals models.
      * @return mixed
      */
     public function actionIndex()
     {
-        // $searchModel = new SlutGirlSearch();
-        // $dataProvider = $searchModel->search( Yii::$app->request->queryParams );
+        $searchModel = new DealsSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        return $this->render( 'index', [
-            // 'searchModel'  => $searchModel,
-            // 'dataProvider' => $dataProvider,
-            // 'categories'   => FiltersHelper::getCategories(),
-        ] );
+        return $this->render('index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
     }
 
-    // /**
-    //  * Displays a single SlutGirl model.
-    //  * @param integer $id
-    //  * @return mixed
-    //  * @throws NotFoundHttpException if the model cannot be found
-    //  */
-    // public function actionView( $id )
-    // {
-    //     Yii::$app->response->format = Response::FORMAT_JSON;
+    /**
+     * Displays a single Deals model.
+     * @param integer $id
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionView($id)
+    {
+        return $this->render('view', [
+            'model' => $this->findModel($id),
+        ]);
+    }
 
-    //     return $this->renderAjax( 'view', [
-    //         'model' => $this->findModel( $id ),
-    //     ] );
-    // }
+    /**
+     * Creates a new Deals model.
+     * If creation is successful, the browser will be redirected to the 'view' page.
+     * @return mixed
+     */
+    public function actionCreate()
+    {
+        $model = new Deals();
 
-    // /**
-    //  * Creates a new SlutGirl model.
-    //  * If creation is successful, the browser will be redirected to the 'view' page.
-    //  * @return mixed
-    //  */
-    // public function actionCreate()
-    // {
-    //     $model = new SlutGirl();
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
+        }
 
-    //     try {
-    //         // $transaction = Yii::$app->db->beginTransaction();
-    //         if ( $model->load( Yii::$app->request->post() ) ){
-    //             $model->image = UploadedFile::getInstance( $model, 'image' );
+        return $this->render('create', [
+            'model' => $model,
+            'categoriesDropdown' => FiltersHelper::getCategories(),
+        ]);
+    }
 
-    //             if ( $model->save() ){
-    //                 // $transaction->commit();
-    //                 UserLog::quickLog( Yii::$app->user->id, UserLog::SLUT_GIRL_CREATE, [ 'type' => 'Create slut girl: #' . $model->id ] );
-    //                 Yii::$app->session->setFlash( 'success', Yii::t( 'messages', 'Item {name} successfully created', [ 'name' => $model->title ] ) );
+    /**
+     * Updates an existing Deals model.
+     * If update is successful, the browser will be redirected to the 'view' page.
+     * @param integer $id
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionUpdate($id)
+    {
+        $model = $this->findModel($id);
 
-    //                 return $this->redirect( [ 'index' ] );
-    //             }
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
+        }
 
-    //             Yii::$app->session->setFlash( 'danger', Yii::t( 'messages', 'Server error. ' ) );
-    //         }
+        return $this->render('update', [
+            'model' => $model,
+            'categoriesDropdown' => FiltersHelper::getCategories(),
+        ]);
+    }
 
-    //     } catch ( Exception $e ) {
-    //         // $transaction->rollBack();
-    //         FlashHelper::exeptionCatchFlash($e);
-    //     }
+    /**
+     * Deletes an existing Deals model.
+     * If deletion is successful, the browser will be redirected to the 'index' page.
+     * @param integer $id
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionDelete($id)
+    {
+        $this->findModel($id)->delete();
 
-    //     return $this->render( 'create', [
-    //         'model'       => $model,
-    //         'categories'  => FiltersHelper::getCategories(),
-    //     ] );
-    // }
+        return $this->redirect(['index']);
+    }
 
-    // /**
-    //  * Updates an existing SlutGirl model.
-    //  * If update is successful, the browser will be redirected to the 'view' page.
-    //  * @param integer $id
-    //  * @return mixed
-    //  * @throws NotFoundHttpException if the model cannot be found
-    //  */
-    // public function actionUpdate( $id )
-    // {
-    //     $model = $this->findModel( $id );
-    //     try{
-    //         $transaction = Yii::$app->db->beginTransaction();
-    //         if ( $model->load( Yii::$app->request->post() ) ){
-    //             $model->image = UploadedFile::getInstance( $model, 'image' );
+    /**
+     * Finds the Deals model based on its primary key value.
+     * If the model is not found, a 404 HTTP exception will be thrown.
+     * @param integer $id
+     * @return Deals the loaded model
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    protected function findModel($id)
+    {
+        if (($model = Deals::findOne($id)) !== null) {
+            return $model;
+        }
 
-    //             if ( $model->save() ){
-    //                 $transaction->commit();
-    //                 UserLog::quickLog( Yii::$app->user->id, UserLog::SLUT_GIRL_UPDATE, [ 'type' => 'Update slut girl: #' . $model->id ] );
-    //                 Yii::$app->session->setFlash( 'success', Yii::t( 'messages', 'Item {name} successfully updated', [ 'name' => $model->title ] ) );
-
-    //                 return $this->redirect( [ 'index' ] );
-    //             }
-
-    //             Yii::$app->session->setFlash( 'danger', Yii::t( 'messages', 'Server error' ) );
-    //         }
-    //     } catch ( Exception $e ) {
-    //         $transaction->rollBack();
-    //         FlashHelper::exeptionCatchFlash($e);
-    //     }    
-
-    //     return $this->render( 'update', [
-    //         'model'       => $model,
-    //         'categories'  => FiltersHelper::getCategories(),
-    //         'advertisers' => FiltersHelper::getUsersByRole( User::ROLE_GAMBADVERTISER ),
-    //     ] );
-    // }
-
-    // /**
-    //  * Deletes an existing SlutGirl model.
-    //  * If deletion is successful, the browser will be redirected to the 'index' page.
-    //  * @param integer $id
-    //  * @return mixed
-    //  * @throws NotFoundHttpException if the model cannot be found
-    //  */
-    // public function actionDelete( $id )
-    // {
-    //     $model = $this->findModel( $id );
-    //     try{
-    //         $transaction = Yii::$app->db->beginTransaction();
-    //         $model->delete();
-    //         $transaction->commit();
-    //         UserLog::quickLog( Yii::$app->user->id, UserLog::SLUT_GIRL_DELETE, [ 'type' => 'Delete girl: #' . $model->id ] );
-    //         Yii::$app->session->setFlash( 'success', Yii::t( 'messages', 'Item {name} successfully deleted', [ 'name' => $model->title ] ) );
-    //     }catch ( Exception $e ) {
-    //         $transaction->rollBack();
-    //         if ($e instanceof yii\db\IntegrityException && $e->getCode() == 23000) {
-    //             FlashHelper::exeptionCatchFlash23000($e, $model->title ?? $model->id);
-
-    //             return $this->redirect(Yii::$app->request->referrer);
-    //         }
-        
-    //         Yii::$app->session->setFlash( 'error', Yii::t( 'messages', 'Server error' ) );
-    //         return $this->redirect(Yii::$app->request->referrer);
-    //     }
-
-    //     return $this->redirect( [ 'index' ] );
-
-
-    // }
-
-    // /**
-    //  * Stata for SlutGirl model based on its primary key value.
-    //  * If the model is not found, a 404 HTTP exception will be thrown.
-    //  * @param integer $id
-    //  * @return SlutGirl the loaded model
-    //  * @throws NotFoundHttpException if the model cannot be found
-    //  */
-    // public function actionStata( $id )
-    // {
-    //     // добавляем в SlutGirlController экшн stata и вьюху под него.
-    //     // Это будет страница, на которой будет выводиться стата именно по этой девке.
-    //     // размести там виджет, который ты сделаешь в задаче 783. Но только уже конкретно под эту девку
-    //     $model = $this->findModel($id);
-
-    //     return $this->render( 'stata', [
-    //         'model'  => $model,
-    //     ] );
-
-
-    // }    
-
-    // /**
-    //  * Finds the SlutGirl model based on its primary key value.
-    //  * If the model is not found, a 404 HTTP exception will be thrown.
-    //  * @param integer $id
-    //  * @return SlutGirl the loaded model
-    //  * @throws NotFoundHttpException if the model cannot be found
-    //  */
-    // protected function findModel( $id )
-    // {
-    //     if ( ($model = SlutGirl::findOne( $id )) !== null ){
-    //         return $model;
-    //     }
-
-    //     throw new NotFoundHttpException( Yii::t( 'messages', 'The requested page does not exist.' ) );
-    // }
+        throw new NotFoundHttpException(Yii::t('messages', 'The requested page does not exist.'));
+    }
 }
